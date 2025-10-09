@@ -1,0 +1,7 @@
+.env
+
+/.bundle
+/vendor/bundle
+
+.idea/
+/tmp/
