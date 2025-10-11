@@ -9,7 +9,7 @@ module Bot
   module Callbacks
     # Handles callback queries from inline keyboards
     class CallbackHandler
-      include QrTypesConfiguration
+      include Qr::QrTypesConfiguration
 
       def initialize(bot, callback_query)
         @bot = bot

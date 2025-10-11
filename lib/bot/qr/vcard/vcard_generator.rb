@@ -2,8 +2,8 @@
 
 require_relative '../qr_generator'
 require_relative 'vcard_builder'
-require_relative '../user_state_manager'
-require_relative '../callbacks/response_builder'
+require_relative '../../user_state_manager'
+require_relative '../../callbacks/callback_builder'
 
 module Bot
   module Qr
