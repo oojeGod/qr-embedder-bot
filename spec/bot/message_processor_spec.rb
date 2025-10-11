@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Bot::MessageProcessor do
-  subject(:processor) { described_class.new }
+  subject(:processor) { described_class.new(bot: bot, message: message) }
 
   let(:bot) { double('bot', api: api) }
   let(:api) { double('api') }
@@ -23,7 +23,7 @@ RSpec.describe Bot::MessageProcessor do
 
       it 'sends QR type selection' do
         expect(api).to receive(:send_message)
-        processor.process(message, bot)
+        processor.process
       end
     end
 
@@ -36,7 +36,7 @@ RSpec.describe Bot::MessageProcessor do
       context 'without photo' do
         it 'asks for photo' do
           expect(api).to receive(:send_message).with(hash_including(text: /photo first/i))
-          processor.process(message, bot)
+          processor.process
         end
       end
 
@@ -50,7 +50,7 @@ RSpec.describe Bot::MessageProcessor do
           expect(api).to receive(:send_message).with(hash_including(text: /Processing/i))
           expect(api).to receive(:send_photo).with(hash_including(caption: /Done/i))
           
-          processor.process(message, bot)
+          processor.process
         end
       end
     end
@@ -84,7 +84,7 @@ RSpec.describe Bot::MessageProcessor do
   def submit_photo
     photo_msg = double('msg', chat: double('chat', id: chat_id), photo: [double(file_id: 'photo_123')], text: nil)
     allow(api).to receive(:send_message)
-    processor.process(photo_msg, bot)
+    described_class.new(bot: bot, message: photo_msg).process
   end
 
   def submit_photo_and_select_qr_type
@@ -95,7 +95,7 @@ RSpec.describe Bot::MessageProcessor do
   end
 
   def stub_processing
-    allow(Bot::PhotoDownloader).to receive(:download).and_return('/tmp/photo.jpg')
+    allow(Bot::PhotoDownloader).to receive(:new).and_return(double(download: '/tmp/photo.jpg'))
     allow(Services::ImageProcessor).to receive(:new).and_return(double(process: '/tmp/result.png'))
     allow(File).to receive(:exist?).and_return(false)
     allow(File).to receive(:open).and_return(double('file'))

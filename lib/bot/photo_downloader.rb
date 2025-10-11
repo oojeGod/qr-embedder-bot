@@ -8,7 +8,7 @@ module Bot
   class PhotoDownloader
     MAX_FILE_SIZE = 10 * 1024 * 1024 # 10 MB
 
-    def initialize(bot, file_id)
+    def initialize(bot:, file_id:)
       @bot = bot
       @file_id = file_id
     end

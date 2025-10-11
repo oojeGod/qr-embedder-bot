@@ -10,7 +10,7 @@ module QR
     EDGE_PADDING = 20
     BRIGHTNESS_SHIFT = 0.38
 
-    def initialize(image_path, qr_code)
+    def initialize(image_path:, qr_code:)
       @image_path = image_path
       @qr_code = qr_code
     end

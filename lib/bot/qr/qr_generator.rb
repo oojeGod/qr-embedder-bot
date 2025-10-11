@@ -9,7 +9,7 @@ module Bot
   module Qr
     # Handles QR code generation and image processing
     class QrGenerator
-      def initialize(bot, chat_id, qr_data)
+      def initialize(bot:, chat_id:, qr_data:)
         @bot = bot
         @chat_id = chat_id
         @qr_data = qr_data
@@ -18,19 +18,19 @@ module Bot
       def generate
         response_builder.send_processing
 
-        file_id = UserStateManager.get_file_id(chat_id)
-        photo_downloader = PhotoDownloader.new(bot, file_id)
+        file_id = UserStateManager.get_file_id(chat_id: chat_id)
+        photo_downloader = PhotoDownloader.new(bot: bot, file_id: file_id)
         file_path = photo_downloader.download
-        image_processor = Services::ImageProcessor.new(file_path, qr_data)
+        image_processor = Services::ImageProcessor.new(image_path: file_path, qr_data: qr_data)
         result_path = image_processor.process
 
-        response_builder.send_result(result_path)
-        UserStateManager.cleanup(chat_id)
+        response_builder.send_result(result_path: result_path)
+        UserStateManager.cleanup(chat_id: chat_id)
         
         result_path
       rescue ArgumentError => e
-        response_builder.send_error(e)
-        UserStateManager.cleanup(chat_id)
+        response_builder.send_error(error: e)
+        UserStateManager.cleanup(chat_id: chat_id)
         raise
       ensure
         cleanup_files(file_path, result_path)
@@ -41,7 +41,7 @@ module Bot
       attr_reader :bot, :chat_id, :qr_data
 
       def response_builder
-        @response_builder ||= Callbacks::CallbackBuilder.new(bot, chat_id)
+        @response_builder ||= Callbacks::CallbackBuilder.new(bot: bot, chat_id: chat_id)
       end
 
       def cleanup_files(file_path, result_path)

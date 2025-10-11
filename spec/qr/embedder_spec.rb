@@ -3,18 +3,16 @@
 require 'spec_helper'
 
 RSpec.describe QR::Embedder do
-  subject(:embedder) { described_class.new }
+  let(:qr_code) { QR::Generator.new(data: 'https://example.com').generate }
+  let(:test_image_path) { create_test_image }
+
+  after do
+    File.delete(test_image_path) if File.exist?(test_image_path)
+  end
 
   describe '#embed' do
-    let(:qr_code) { QR::Generator.new.generate('https://example.com') }
-    let(:test_image_path) { create_test_image }
-
-    after do
-      File.delete(test_image_path) if File.exist?(test_image_path)
-    end
-
     context 'with valid inputs' do
-      subject(:result_path) { embedder.embed(test_image_path, qr_code) }
+      subject(:result_path) { described_class.new(image_path: test_image_path, qr_code: qr_code).embed }
 
       it 'creates new image file' do
         expect(File).to exist(result_path)
@@ -40,14 +38,14 @@ RSpec.describe QR::Embedder do
     context 'with invalid inputs' do
       context 'when image does not exist' do
         it 'raises ArgumentError' do
-          expect { embedder.embed('/non/existent/image.png', qr_code) }
+          expect { described_class.new(image_path: '/non/existent/image.png', qr_code: qr_code).embed }
             .to raise_error(ArgumentError, /Image file does not exist/)
         end
       end
 
       context 'when qr_code is nil' do
         it 'raises ArgumentError' do
-          expect { embedder.embed(test_image_path, nil) }
+          expect { described_class.new(image_path: test_image_path, qr_code: nil).embed }
             .to raise_error(ArgumentError, 'QR code cannot be nil')
         end
       end
@@ -60,7 +58,7 @@ RSpec.describe QR::Embedder do
         end
 
         it 'raises ArgumentError with size details' do
-          expect { embedder.embed(small_image_path, qr_code) }
+          expect { described_class.new(image_path: small_image_path, qr_code: qr_code).embed }
             .to raise_error(ArgumentError, /Image is too small/)
         end
       end

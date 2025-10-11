@@ -9,7 +9,7 @@ module Bot
   module Callbacks
     # Main orchestrator for callback processing
     class CallbackProcessor
-      def initialize(bot, callback_query)
+      def initialize(bot:, callback_query:)
         @bot = bot
         @callback_query = callback_query
       end
@@ -17,7 +17,7 @@ module Bot
       def process_callback
         bot.api.answer_callback_query(callback_query_id: callback_query.id)
         
-        handler = Callbacks::CallbackHandler.new(bot, callback_query)
+        handler = Callbacks::CallbackHandler.new(bot: bot, callback_query: callback_query)
         handler.handle_callback
       end
 

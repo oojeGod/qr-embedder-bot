@@ -20,19 +20,19 @@ module Bot
           puts "👋 Send /start to begin"
           puts "⏹  Press Ctrl+C to stop\n\n"
 
-          bot.listen { |message| handle_message(bot, message) }
+          bot.listen { |message| handle_message(bot: bot, message: message) }
         end
       end
 
       private
 
-      def handle_message(bot, message)
+      def handle_message(bot:, message:)
         case message
         when Telegram::Bot::Types::CallbackQuery
-          processor = Callbacks::CallbackProcessor.new(bot, message)
+          processor = Callbacks::CallbackProcessor.new(bot: bot, callback_query: message)
           processor.process_callback
         when Telegram::Bot::Types::Message
-          processor = Messages::MessageProcessor.new(bot, message)
+          processor = Messages::MessageProcessor.new(bot: bot, message: message)
           processor.process
         end
       rescue StandardError => e

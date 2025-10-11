@@ -4,16 +4,16 @@ module Services
   # Orchestrates QR code generation and embedding into images
   # Main entry point for image processing workflow
   class ImageProcessor
-    def initialize(image_path, qr_data)
+    def initialize(image_path:, qr_data:)
       @image_path = image_path
       @qr_data = qr_data
     end
 
     def process
-      qr_generator = QR::Generator.new(qr_data)
+      qr_generator = QR::Generator.new(data: qr_data)
       qr_code = qr_generator.generate
       
-      embedder = QR::Embedder.new(image_path, qr_code)
+      embedder = QR::Embedder.new(image_path: image_path, qr_code: qr_code)
       result_path = embedder.embed
 
       result_path

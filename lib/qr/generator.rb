@@ -5,7 +5,7 @@ require 'rqrcode'
 module QR
   # Generates QR codes from text data
   class Generator
-    def initialize(data)
+    def initialize(data:)
       @data = data
     end
 

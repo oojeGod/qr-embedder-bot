@@ -10,24 +10,24 @@ module Bot
 
       MIN_IMAGE_SIZE = 300
 
-      def initialize(bot, chat_id)
+      def initialize(bot:, chat_id:)
         @bot = bot
         @chat_id = chat_id
       end
 
       def send_welcome
-        send_message(welcome_text)
+        send_message(text: welcome_text)
       end
 
       def send_photo_received
-        send_message(photo_received_text, qr_type_keyboard)
+        send_message(text: photo_received_text, reply_markup: qr_type_keyboard)
       end
 
       def send_processing
-        send_message('🔄 Processing your image...')
+        send_message(text: '🔄 Processing your image...')
       end
 
-      def send_result(result_path)
+      def send_result(result_path:)
         raise 'Bot instance required for sending photos' unless bot
 
         bot.api.send_photo(
@@ -37,20 +37,20 @@ module Bot
         )
       end
 
-      def send_error(error)
-        send_message(build_error_message(error))
+      def send_error(error:)
+        send_message(text: build_error_message(error))
       end
 
       def send_ask_photo
-        send_message('📷 Please send a photo first, then I will ask for QR data.')
+        send_message(text: '📷 Please send a photo first, then I will ask for QR data.')
       end
 
-      def send_qr_prompt(qr_type)
+      def send_qr_prompt(qr_type:)
         prompt_text = QR_TYPES[qr_type][:prompt]
-        send_message(prompt_text)
+        send_message(text: prompt_text)
       end
 
-      def send_message(text, reply_markup = nil)
+      def send_message(text:, reply_markup: nil)
         raise 'Bot instance required for sending messages' unless bot
         
         params = { chat_id: chat_id, text: text }

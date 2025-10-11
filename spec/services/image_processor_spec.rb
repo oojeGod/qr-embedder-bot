@@ -3,18 +3,16 @@
 require 'spec_helper'
 
 RSpec.describe Services::ImageProcessor do
-  subject(:processor) { described_class.new }
+  let(:test_image_path) { create_test_image }
+  let(:qr_data) { 'https://example.com' }
+
+  after do
+    File.delete(test_image_path) if File.exist?(test_image_path)
+  end
 
   describe '#process' do
-    let(:test_image_path) { create_test_image }
-    let(:qr_data) { 'https://example.com' }
-
-    after do
-      File.delete(test_image_path) if File.exist?(test_image_path)
-    end
-
     context 'with valid inputs' do
-      subject(:result_path) { processor.process(test_image_path, qr_data) }
+      subject(:result_path) { described_class.new(image_path: test_image_path, qr_data: qr_data).process }
 
       it 'creates processed image file' do
         expect(File).to exist(result_path)
@@ -30,21 +28,21 @@ RSpec.describe Services::ImageProcessor do
     context 'with invalid inputs' do
       context 'when image does not exist' do
         it 'raises ArgumentError' do
-          expect { processor.process('/non/existent/image.png', qr_data) }
+          expect { described_class.new(image_path: '/non/existent/image.png', qr_data: qr_data).process }
             .to raise_error(ArgumentError, /Image file does not exist/)
         end
       end
 
       context 'when qr_data is empty' do
         it 'raises ArgumentError' do
-          expect { processor.process(test_image_path, '') }
+          expect { described_class.new(image_path: test_image_path, qr_data: '').process }
             .to raise_error(ArgumentError, 'Data cannot be empty')
         end
       end
 
       context 'when qr_data is nil' do
         it 'raises ArgumentError' do
-          expect { processor.process(test_image_path, nil) }
+          expect { described_class.new(image_path: test_image_path, qr_data: nil).process }
             .to raise_error(ArgumentError, 'Data cannot be empty')
         end
       end

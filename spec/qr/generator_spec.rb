@@ -3,13 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe QR::Generator do
-  subject(:generator) { described_class.new }
+  subject(:generator) { described_class.new(data: data) }
+  let(:data) { 'https://example.com' }
 
   describe '#generate' do
-    let(:data) { 'https://example.com' }
-
     context 'with valid data' do
-      subject(:qr_code) { generator.generate(data) }
+      subject(:qr_code) { generator.generate }
 
       it 'returns QRCode instance' do
         expect(qr_code).to be_a(RQRCode::QRCode)
@@ -22,14 +21,18 @@ RSpec.describe QR::Generator do
 
     context 'with invalid data' do
       context 'when data is empty string' do
+        subject(:generator) { described_class.new(data: '') }
+        
         it 'raises ArgumentError' do
-          expect { generator.generate('') }.to raise_error(ArgumentError, 'Data cannot be empty')
+          expect { generator.generate }.to raise_error(ArgumentError, 'Data cannot be empty')
         end
       end
 
       context 'when data is nil' do
+        subject(:generator) { described_class.new(data: nil) }
+        
         it 'raises ArgumentError' do
-          expect { generator.generate(nil) }.to raise_error(ArgumentError, 'Data cannot be empty')
+          expect { generator.generate }.to raise_error(ArgumentError, 'Data cannot be empty')
         end
       end
     end

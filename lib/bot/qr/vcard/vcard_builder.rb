@@ -13,32 +13,32 @@ module Bot
         }.freeze
 
         class << self
-          def start_input(chat_id, state_manager)
-            state_manager.set_vcard_step(chat_id, 'name')
-            state_manager.update_vcard_data(chat_id, :data, {})
-            get_field_prompt('name', 1)
+          def start_input(chat_id:, state_manager:)
+            state_manager.set_vcard_step(chat_id: chat_id, step: 'name')
+            state_manager.update_vcard_data(chat_id: chat_id, field: :data, value: {})
+            get_field_prompt(field: 'name', step_number: 1)
           end
 
-          def process_step(chat_id, data, state_manager)
-            step = state_manager.get_vcard_step(chat_id)
+          def process_step(chat_id:, data:, state_manager:)
+            step = state_manager.get_vcard_step(chat_id: chat_id)
             
             case step
             when 'name'
-              handle_name_input(chat_id, data, state_manager)
+              handle_name_input(chat_id: chat_id, data: data, state_manager: state_manager)
             when 'last_name'
-              handle_last_name_input(chat_id, data, state_manager)
+              handle_last_name_input(chat_id: chat_id, data: data, state_manager: state_manager)
             when 'phone'
-              handle_phone_input(chat_id, data, state_manager)
+              handle_phone_input(chat_id: chat_id, data: data, state_manager: state_manager)
             when 'email'
-              handle_email_input(chat_id, data, state_manager)
+              handle_email_input(chat_id: chat_id, data: data, state_manager: state_manager)
             end
           end
 
-          def get_vcard_data(chat_id, state_manager)
-            state_manager.get_vcard_data(chat_id)
+          def get_vcard_data(chat_id:, state_manager:)
+            state_manager.get_vcard_data(chat_id: chat_id)
           end
 
-          def build_vcard(data)
+          def build_vcard(data:)
             vcard_lines = [
               "BEGIN:VCARD",
               "FN:#{data[:first_name]} #{data[:last_name]}"
@@ -53,30 +53,30 @@ module Bot
 
           private
 
-          def handle_name_input(chat_id, data, state_manager)
-            state_manager.update_vcard_data(chat_id, :first_name, data)
-            state_manager.set_vcard_step(chat_id, 'last_name')
-            get_field_prompt('last_name', 2)
+          def handle_name_input(chat_id:, data:, state_manager:)
+            state_manager.update_vcard_data(chat_id: chat_id, field: :first_name, value: data)
+            state_manager.set_vcard_step(chat_id: chat_id, step: 'last_name')
+            get_field_prompt(field: 'last_name', step_number: 2)
           end
 
-          def handle_last_name_input(chat_id, data, state_manager)
-            state_manager.update_vcard_data(chat_id, :last_name, data)
-            state_manager.set_vcard_step(chat_id, 'phone')
-            get_field_prompt('phone', 3, "💡 Example: +1234567890")
+          def handle_last_name_input(chat_id:, data:, state_manager:)
+            state_manager.update_vcard_data(chat_id: chat_id, field: :last_name, value: data)
+            state_manager.set_vcard_step(chat_id: chat_id, step: 'phone')
+            get_field_prompt(field: 'phone', step_number: 3, hint: "💡 Example: +1234567890")
           end
 
-          def handle_phone_input(chat_id, data, state_manager)
-            state_manager.update_vcard_data(chat_id, :phone, data)
-            state_manager.set_vcard_step(chat_id, 'email')
-            get_field_prompt('email', 4, "💡 Example: john@example.com")
+          def handle_phone_input(chat_id:, data:, state_manager:)
+            state_manager.update_vcard_data(chat_id: chat_id, field: :phone, value: data)
+            state_manager.set_vcard_step(chat_id: chat_id, step: 'email')
+            get_field_prompt(field: 'email', step_number: 4, hint: "💡 Example: john@example.com")
           end
 
-          def handle_email_input(chat_id, data, state_manager)
-            state_manager.update_vcard_data(chat_id, :email, data)
+          def handle_email_input(chat_id:, data:, state_manager:)
+            state_manager.update_vcard_data(chat_id: chat_id, field: :email, value: data)
             nil
           end
 
-          def get_field_prompt(field, step_number, hint = nil)
+          def get_field_prompt(field:, step_number:, hint: nil)
             text = "📝 Step #{step_number}/4: What's your #{FIELD_LABELS[field]}?"
             text += "\n\n#{hint}" if hint
             text
