@@ -46,7 +46,8 @@ module Bot
       end
 
       def send_qr_prompt(qr_type)
-        send_message(QR_TYPES[qr_type][:prompt])
+        prompt_text = QR_TYPES[qr_type][:prompt]
+        send_message(prompt_text)
       end
 
       def send_message(text, reply_markup = nil)

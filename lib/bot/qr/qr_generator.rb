@@ -18,19 +18,19 @@ module Bot
       def generate
         response_builder.send_processing
 
-        file_id = state_manager.get_file_id(chat_id)
+        file_id = UserStateManager.get_file_id(chat_id)
         photo_downloader = PhotoDownloader.new(bot, file_id)
         file_path = photo_downloader.download
         image_processor = Services::ImageProcessor.new(file_path, qr_data)
         result_path = image_processor.process
 
         response_builder.send_result(result_path)
-        state_manager.cleanup(chat_id)
+        UserStateManager.cleanup(chat_id)
         
         result_path
       rescue ArgumentError => e
         response_builder.send_error(e)
-        state_manager.cleanup(chat_id)
+        UserStateManager.cleanup(chat_id)
         raise
       ensure
         cleanup_files(file_path, result_path)
@@ -39,10 +39,6 @@ module Bot
       private
 
       attr_reader :bot, :chat_id, :qr_data
-
-      def state_manager
-        @state_manager ||= UserStateManager.new
-      end
 
       def response_builder
         @response_builder ||= Callbacks::CallbackBuilder.new(bot, chat_id)

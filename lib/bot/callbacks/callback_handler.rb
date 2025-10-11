@@ -19,10 +19,10 @@ module Bot
       def handle_callback
         chat_id = callback_query.message.chat.id
         qr_type = callback_query.data
+        
+        return unless UserStateManager.has_photo?(chat_id)
 
-        return unless valid_callback?(qr_type, chat_id)
-
-        state_manager.set_qr_type(chat_id, qr_type)
+        UserStateManager.set_qr_type(chat_id, qr_type)
         handle_qr_type_selection(chat_id, qr_type)
       end
 
@@ -30,25 +30,17 @@ module Bot
 
       attr_reader :callback_query, :bot
 
-      def state_manager
-        @state_manager ||= UserStateManager.new
-      end
-
       def response_builder
         @response_builder ||= Callbacks::CallbackBuilder.new(bot, callback_query.message.chat.id)
       end
 
       def handle_qr_type_selection(chat_id, qr_type)
         if qr_type == 'vcard'
-          prompt_text = Vcard::VcardBuilder.start_input(chat_id, state_manager)
+          prompt_text = Qr::Vcard::VcardBuilder.start_input(chat_id, UserStateManager)
           response_builder.send_message(prompt_text)
         else
           response_builder.send_qr_prompt(qr_type)
         end
-      end
-
-      def valid_callback?(qr_type, chat_id)
-        state_manager.valid_callback?(qr_type, chat_id)
       end
     end
   end
