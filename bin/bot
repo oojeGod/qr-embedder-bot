@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'bundler/setup'
+require 'dotenv/load'
+
+# Load all lib files
+require_relative '../lib/qr/generator'
+require_relative '../lib/qr/embedder'
+require_relative '../lib/services/image_processor'
+require_relative '../lib/bot/photo_downloader'
+require_relative '../lib/bot/message_processor'
+require_relative '../lib/bot/client'
+
+# Start the bot
+Bot::Client.start
+
