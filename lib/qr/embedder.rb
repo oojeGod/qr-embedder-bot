@@ -8,7 +8,7 @@ module QR
     MIN_IMAGE_SIZE = 300
     QR_SIZE_RATIO = 0.25
     EDGE_PADDING = 20
-    BRIGHTNESS_SHIFT = 0.38
+    QR_OPACITY = 0.3
 
     def initialize(image_path:, qr_code:)
       @image_path = image_path
@@ -20,7 +20,7 @@ module QR
       raise ArgumentError, 'QR code cannot be nil' if qr_code.nil?
 
       validate_image_size!
-      embed_qr_steganography
+      embed_qr_with_overlay
     end
 
     private
@@ -36,7 +36,7 @@ module QR
       end
     end
 
-    def embed_qr_steganography
+    def embed_qr_with_overlay
       base_image = MiniMagick::Image.open(image_path)
       qr_matrix = qr_code.modules
       qr_pixel_size = calculate_qr_size(base_image, qr_matrix)
@@ -61,7 +61,6 @@ module QR
       [offset_x, offset_y]
     end
 
-
     def create_overlay(base_image, qr_matrix, qr_pixel_size, offset_x, offset_y)
       overlay_path = File.join(Dir.tmpdir, "overlay_#{Time.now.to_i}_#{rand(1000)}.png")
 
@@ -74,10 +73,8 @@ module QR
             x = offset_x + (col_idx * qr_pixel_size)
             y = offset_y + (row_idx * qr_pixel_size)
 
-            bg_color = sample_background_color(base_image, x, y, qr_pixel_size)
-            module_color = calculate_color(bg_color, is_dark)
-
-            convert.fill module_color
+            color = is_dark ? 'black' : 'white'
+            convert.fill color
             convert.draw "rectangle #{x},#{y} #{x + qr_pixel_size},#{y + qr_pixel_size}"
           end
         end
@@ -88,47 +85,21 @@ module QR
       overlay_path
     end
 
-    def sample_background_color(image, x, y, size)
-      sample_x = [0, [x + size / 2, image.width - 1].min].max
-      sample_y = [0, [y + size / 2, image.height - 1].min].max
-      
-      pixel_data = image.run_command(:convert, image.path,
-                                     '-crop', "1x1+#{sample_x}+#{sample_y}",
-                                     '-format', '%[pixel:u]', 'info:')
-      
-      if pixel_data =~ /srgba?\((\d+),(\d+),(\d+)/
-        { r: $1.to_i, g: $2.to_i, b: $3.to_i }
-      else
-        { r: 128, g: 128, b: 128 }
-      end
-    end
-
-    def calculate_color(bg_color, is_dark)
-      r, g, b = bg_color[:r], bg_color[:g], bg_color[:b]
-      
-      if is_dark
-        factor = 1.0 - BRIGHTNESS_SHIFT
-        new_r = (r * factor).to_i
-        new_g = (g * factor).to_i
-        new_b = (b * factor).to_i
-      else
-        new_r = [255, (r + (255 - r) * BRIGHTNESS_SHIFT).to_i].min
-        new_g = [255, (g + (255 - g) * BRIGHTNESS_SHIFT).to_i].min
-        new_b = [255, (b + (255 - b) * BRIGHTNESS_SHIFT).to_i].min
-      end
-      
-      "rgb(#{new_r},#{new_g},#{new_b})"
-    end
-
     def apply_overlay(base_image, overlay_path)
-      result = base_image.composite(MiniMagick::Image.open(overlay_path)) do |c|
-        c.compose 'Over'
-        c.gravity 'center'
+      result_path = File.join(Dir.tmpdir, "result_#{Time.now.to_i}_#{rand(1000)}.png")
+      
+      overlay = MiniMagick::Image.open(overlay_path)
+      overlay.combine_options do |c|
+        c.alpha 'set'
+        c.channel 'A'
+        c.evaluate 'multiply', QR_OPACITY
       end
+      
+      base_image.composite(overlay) do |c|
+        c.compose 'Over'
+      end.write(result_path)
 
-      output_path = File.join(Dir.tmpdir, "result_#{Time.now.to_i}_#{rand(1000)}.png")
-      result.write(output_path)
-      output_path
+      result_path
     end
   end
 end
