@@ -2,7 +2,7 @@
 
 require_relative '../user_state_manager'
 require_relative 'response_builder'
-require_relative '../qr/vcard/vcard_processor'
+require_relative '../qr/vcard/vcard_builder'
 require_relative 'callback_handler'
 
 module Bot

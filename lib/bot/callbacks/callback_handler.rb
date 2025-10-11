@@ -2,7 +2,7 @@
 
 require_relative '../user_state_manager'
 require_relative 'callback_builder'
-require_relative '../qr/vcard/vcard_processor'
+require_relative '../qr/vcard/vcard_builder'
 require_relative '../qr/qr_types_configuration'
 
 module Bot
@@ -40,7 +40,7 @@ module Bot
 
       def handle_qr_type_selection(chat_id, qr_type)
         if qr_type == 'vcard'
-          prompt_text = Vcard::VcardProcessor.start_input(chat_id, state_manager)
+          prompt_text = Vcard::VcardBuilder.start_input(chat_id, state_manager)
           response_builder.send_message(prompt_text)
         else
           response_builder.send_qr_prompt(qr_type)

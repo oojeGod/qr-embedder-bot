@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require 'telegram/bot'
+require_relative 'messages/message_processor'
+require_relative 'callbacks/callback_processor'
 
 module Bot
   # Main bot client that handles Telegram Bot API connection and message routing
@@ -27,16 +29,14 @@ module Bot
       def handle_message(bot, message)
         case message
         when Telegram::Bot::Types::CallbackQuery
-          processor.process_callback(message, bot)
+          processor = Callbacks::CallbackProcessor.new(bot, message)
+          processor.process_callback
         when Telegram::Bot::Types::Message
-          processor.process(message, bot)
+          processor = Messages::MessageProcessor.new(bot, message)
+          processor.process
         end
       rescue StandardError => e
         log_error(e)
-      end
-
-      def processor
-        @processor ||= MessageProcessor.new
       end
 
       def token

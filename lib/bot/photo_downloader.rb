@@ -8,50 +8,55 @@ module Bot
   class PhotoDownloader
     MAX_FILE_SIZE = 10 * 1024 * 1024 # 10 MB
 
-    class << self
-      def download(bot, file_id)
-        file_info = bot.api.get_file(file_id: file_id)
-        file_path = file_info.dig('result', 'file_path')
-        file_size = file_info.dig('result', 'file_size')
+    def initialize(bot, file_id)
+      @bot = bot
+      @file_id = file_id
+    end
 
-        validate_file_size!(file_size)
+    def download
+      file_info = bot.api.get_file(file_id: file_id)
+      file_path = file_info.dig('result', 'file_path')
+      file_size = file_info.dig('result', 'file_size')
 
-        file_url = build_file_url(file_path)
-        download_to_file(file_url, file_path)
-      rescue OpenURI::HTTPError, Timeout::Error => e
-        raise "Failed to download photo: #{e.message}"
-      end
+      validate_file_size!(file_size)
 
-      private
+      file_url = build_file_url(file_path)
+      download_to_file(file_url, file_path)
+    rescue OpenURI::HTTPError, Timeout::Error => e
+      raise "Failed to download photo: #{e.message}"
+    end
 
-      def validate_file_size!(file_size)
-        return unless file_size && file_size > MAX_FILE_SIZE
+    private
 
-        raise "File is too large (max #{MAX_FILE_SIZE / 1024 / 1024}MB)"
-      end
+    attr_reader :bot, :file_id
 
-      def build_file_url(file_path)
-        token = ENV.fetch('TELEGRAM_BOT_TOKEN')
-        "https://api.telegram.org/file/bot#{token}/#{file_path}"
-      end
+    def validate_file_size!(file_size)
+      return unless file_size && file_size > MAX_FILE_SIZE
 
-      def download_to_file(file_url, file_path)
-        extension = File.extname(file_path)
-        extension = '.jpg' if extension.empty?
+      raise "File is too large (max #{MAX_FILE_SIZE / 1024 / 1024}MB)"
+    end
 
-        tmp_dir = ENV.fetch('TEMP_FOLDER', './tmp')
-        FileUtils.mkdir_p(tmp_dir) unless Dir.exist?(tmp_dir)
+    def build_file_url(file_path)
+      token = ENV.fetch('TELEGRAM_BOT_TOKEN')
+      "https://api.telegram.org/file/bot#{token}/#{file_path}"
+    end
 
-        local_path = File.join(tmp_dir, "photo_#{Time.now.to_i}_#{rand(10000)}#{extension}")
+    def download_to_file(file_url, file_path)
+      extension = File.extname(file_path)
+      extension = '.jpg' if extension.empty?
 
-        File.open(local_path, 'wb') do |file|
-          URI.open(file_url, 'rb', read_timeout: 30) do |remote_file|
-            file.write(remote_file.read)
-          end
+      tmp_dir = ENV.fetch('TEMP_FOLDER', './tmp')
+      FileUtils.mkdir_p(tmp_dir) unless Dir.exist?(tmp_dir)
+
+      local_path = File.join(tmp_dir, "photo_#{Time.now.to_i}_#{rand(10000)}#{extension}")
+
+      File.open(local_path, 'wb') do |file|
+        URI.open(file_url, 'rb', read_timeout: 30) do |remote_file|
+          file.write(remote_file.read)
         end
-
-        local_path
       end
+
+      local_path
     end
   end
 end
