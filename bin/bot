@@ -9,8 +9,8 @@ require_relative '../lib/qr/generator'
 require_relative '../lib/qr/embedder'
 require_relative '../lib/services/image_processor'
 require_relative '../lib/bot/photo_downloader'
-require_relative '../lib/bot/messages/message_processor'
-require_relative '../lib/bot/callbacks/callback_processor'
+require_relative '../lib/bot/messages/processor'
+require_relative '../lib/bot/callbacks/processor'
 require_relative '../lib/bot/client'
 
 # Start the bot

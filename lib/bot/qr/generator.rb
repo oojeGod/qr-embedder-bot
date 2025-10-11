@@ -3,7 +3,7 @@
 require_relative '../photo_downloader'
 require_relative '../../services/image_processor'
 require_relative '../user_state_manager'
-require_relative '../callbacks/callback_builder'
+require_relative '../callbacks/builder'
 
 module Bot
   module Qr

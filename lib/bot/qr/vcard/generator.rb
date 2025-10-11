@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require_relative '../qr_generator'
-require_relative 'vcard_builder'
+require_relative '../generator'
+require_relative 'builder'
 require_relative '../../user_state_manager'
-require_relative '../../callbacks/callback_builder'
+require_relative '../../callbacks/builder'
 
 module Bot
   module Qr

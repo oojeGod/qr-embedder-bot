@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require_relative '../user_state_manager'
-require_relative 'callback_builder'
-require_relative '../qr/vcard/vcard_builder'
-require_relative 'callback_handler'
+require_relative 'builder'
+require_relative '../qr/vcard/builder'
+require_relative 'handler'
 
 module Bot
   module Callbacks

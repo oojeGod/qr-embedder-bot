@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
 require_relative '../user_state_manager'
-require_relative 'callback_builder'
-require_relative '../qr/vcard/vcard_builder'
-require_relative '../qr/qr_types_configuration'
+require_relative 'builder'
+require_relative '../qr/vcard/builder'
+require_relative '../qr/configuration_types'
 
 module Bot
   module Callbacks
     # Handles callback queries from inline keyboards
     class CallbackHandler
-      include Qr::QrTypesConfiguration
+      include Bot::Qr::QrTypesConfiguration
 
       def initialize(bot:, callback_query:)
         @bot = bot

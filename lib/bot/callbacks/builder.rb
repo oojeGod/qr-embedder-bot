@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require_relative '../qr/qr_types_configuration'
+require_relative '../qr/configuration_types'
 
 module Bot
   module Callbacks
     # Builds and sends responses to users
     class CallbackBuilder
-      include Qr::QrTypesConfiguration
+      include Bot::Qr::QrTypesConfiguration
 
       MIN_IMAGE_SIZE = 300
 

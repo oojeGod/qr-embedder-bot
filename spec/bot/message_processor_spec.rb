@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Bot::MessageProcessor do
+RSpec.describe Bot::Messages::MessageProcessor do
   subject(:processor) { described_class.new(bot: bot, message: message) }
 
   let(:bot) { double('bot', api: api) }

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 require 'telegram/bot'
-require_relative 'messages/message_processor'
-require_relative 'callbacks/callback_processor'
+require_relative 'messages/processor'
+require_relative 'callbacks/processor'
 
 module Bot
   # Main bot client that handles Telegram Bot API connection and message routing
