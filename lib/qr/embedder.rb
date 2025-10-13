@@ -8,7 +8,7 @@ module QR
     MIN_IMAGE_SIZE = 300
     QR_SIZE_RATIO = 0.25
     EDGE_PADDING = 20
-    QR_OPACITY = 0.4
+    QR_OPACITY = 0.5
 
     def initialize(image_path:, qr_code:)
       @image_path = image_path

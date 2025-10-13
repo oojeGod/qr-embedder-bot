@@ -4,7 +4,7 @@ module Bot
   module Qr
     module Vcard
       # Handles vCard creation and input flow
-      class VcardBuilder
+      class Builder
         FIELD_LABELS = {
           'name' => "first name",
           'last_name' => "last name", 

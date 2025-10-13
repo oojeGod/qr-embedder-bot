@@ -9,14 +9,14 @@ require_relative 'handler'
 module Bot
   module Messages
     # Main orchestrator for message processing
-    class MessageProcessor
+    class Processor
       def initialize(bot:, message:)
         @bot = bot
         @message = message
       end
 
       def process
-        handler = Messages::MessageHandler.new(bot: bot, message: message)
+        handler = Handler.new(bot: bot, message: message)
         
         return handler.handle_photo if message.photo
         return handler.handle_text if message.text

@@ -8,8 +8,8 @@ require_relative '../qr/configuration_types'
 module Bot
   module Callbacks
     # Handles callback queries from inline keyboards
-    class CallbackHandler
-      include Bot::Qr::QrTypesConfiguration
+    class Handler
+      include Bot::Qr::ConfigurationTypes
 
       def initialize(bot:, callback_query:)
         @bot = bot
@@ -31,12 +31,12 @@ module Bot
       attr_reader :callback_query, :bot
 
       def response_builder
-        @response_builder ||= Callbacks::CallbackBuilder.new(bot: bot, chat_id: callback_query.message.chat.id)
+        @response_builder ||= Builder.new(bot: bot, chat_id: callback_query.message.chat.id)
       end
 
       def handle_qr_type_selection(chat_id, qr_type)
         if qr_type == 'vcard'
-          prompt_text = Qr::Vcard::VcardBuilder.start_input(chat_id: chat_id, state_manager: UserStateManager)
+          prompt_text = Qr::Vcard::Builder.start_input(chat_id: chat_id, state_manager: UserStateManager)
           response_builder.send_message(text: prompt_text)
         else
           response_builder.send_qr_prompt(qr_type: qr_type)

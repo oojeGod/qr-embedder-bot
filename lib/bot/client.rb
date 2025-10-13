@@ -29,10 +29,10 @@ module Bot
       def handle_message(bot:, message:)
         case message
         when Telegram::Bot::Types::CallbackQuery
-          processor = Callbacks::CallbackProcessor.new(bot: bot, callback_query: message)
+          processor = Callbacks::Processor.new(bot: bot, callback_query: message)
           processor.process_callback
         when Telegram::Bot::Types::Message
-          processor = Messages::MessageProcessor.new(bot: bot, message: message)
+          processor = Messages::Processor.new(bot: bot, message: message)
           processor.process
         end
       rescue StandardError => e

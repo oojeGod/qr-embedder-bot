@@ -3,7 +3,7 @@
 module Bot
   module Qr
     # keyboard generation
-    module QrTypesConfiguration
+    module ConfigurationTypes
       QR_TYPES = {
         'url' => { label: '🔗 URL', prompt: 'Send me the URL (e.g., https://example.com):' },
         'text' => { label: '📝 Text', prompt: 'Send me any text you want to embed:' },

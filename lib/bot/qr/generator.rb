@@ -8,7 +8,7 @@ require_relative '../callbacks/builder'
 module Bot
   module Qr
     # Handles QR code generation and image processing
-    class QrGenerator
+    class Generator
       def initialize(bot:, chat_id:, qr_data:)
         @bot = bot
         @chat_id = chat_id
@@ -41,7 +41,7 @@ module Bot
       attr_reader :bot, :chat_id, :qr_data
 
       def response_builder
-        @response_builder ||= Callbacks::CallbackBuilder.new(bot: bot, chat_id: chat_id)
+        @response_builder ||= Callbacks::Builder.new(bot: bot, chat_id: chat_id)
       end
 
       def cleanup_files(file_path, result_path)

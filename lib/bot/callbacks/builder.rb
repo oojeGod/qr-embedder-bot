@@ -5,8 +5,8 @@ require_relative '../qr/configuration_types'
 module Bot
   module Callbacks
     # Builds and sends responses to users
-    class CallbackBuilder
-      include Bot::Qr::QrTypesConfiguration
+    class Builder
+      include Bot::Qr::ConfigurationTypes
 
       MIN_IMAGE_SIZE = 300
 
