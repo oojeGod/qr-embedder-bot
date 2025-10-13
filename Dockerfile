@@ -8,8 +8,7 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 COPY Gemfile Gemfile.lock ./
-RUN bundle config set --local without 'development test' && \
-    bundle install
+RUN bundle install
 
 COPY . .
 
