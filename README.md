@@ -4,7 +4,6 @@ A Telegram bot that embeds QR codes into images.
 
 <div align="left">
   <img src="docs/images/example.jpg" alt="Image with embedded QR code" width="600"/>
-  <p><i>Image with embedded QR code</i></p>
 </div>
 
 ## Features
