@@ -17,7 +17,7 @@ A Telegram bot that embeds QR codes into images.
 1. Clone the repository:
    ```bash
    git clone <repository-url>
-   cd qr_telegram_bot
+   cd qr-embedder-bot
    ```
 
 2. Create `.env` file:
