@@ -1,6 +1,13 @@
-# QR Telegram Bot
+# QR Embed Telegram Bot
 
 A Telegram bot that embeds QR codes into images.
+
+## Example
+
+<div align="center">
+  <img src="docs/images/example.jpg" alt="Image with embedded QR code" width="600"/>
+  <p><i>Image with embedded QR code</i></p>
+</div>
 
 ## Features
 
@@ -10,12 +17,18 @@ A Telegram bot that embeds QR codes into images.
 
 ## Setup
 
-1. Create `.env` file:
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd qr_telegram_bot
+   ```
+
+2. Create `.env` file:
    ```bash
    cp .env.example .env
    ```
 
-2. Get bot token from [@BotFather](https://t.me/botfather) and add to `.env`
+3. Get bot token from [@BotFather](https://t.me/botfather) and add to `.env`
 
 ## Usage
 
